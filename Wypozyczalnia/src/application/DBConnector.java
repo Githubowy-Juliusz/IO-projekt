@@ -22,7 +22,7 @@ public class DBConnector {
 		List<Order> orders = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
 			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery("SELECT * FROM orders;");
+			ResultSet result = statement.executeQuery("SELECT * FROM orders ORDER BY id;");
 			while (result.next()) {
 				Integer id = result.getInt(1);
 				Integer id_equipment = result.getInt(2);
@@ -41,7 +41,7 @@ public class DBConnector {
 		List<Client> clients = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
 			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery("SELECT * FROM client;");
+			ResultSet result = statement.executeQuery("SELECT * FROM client ORDER BY id;");
 			while (result.next()) {
 				Integer id = result.getInt(1);
 				String name = result.getString(2);
@@ -62,7 +62,7 @@ public class DBConnector {
 		List<Equipment> equipmentList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
 			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery("SELECT * FROM equipment;");
+			ResultSet result = statement.executeQuery("SELECT * FROM equipment ORDER BY id;");
 			while (result.next()) {
 				Integer id = result.getInt(1);
 				String type = result.getString(2);
@@ -83,7 +83,7 @@ public class DBConnector {
 		List<Order> archiveList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
 			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery("SELECT * FROM archive;");
+			ResultSet result = statement.executeQuery("SELECT * FROM archive ORDER BY id;");
 			while (result.next()) {
 				Integer id = result.getInt(1);
 				Integer id_equipment = result.getInt(2);
@@ -100,8 +100,7 @@ public class DBConnector {
 
 	public String addOrder(String id_equipment, String id_client, String date) {
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
-			String query = "INSERT INTO orders VALUES(0, " + id_equipment + ", " + id_client + ", \"" + date + "\")"
-					+ "ORDER BY id;";
+			String query = "INSERT INTO orders VALUES(0, " + id_equipment + ", " + id_client + ", \"" + date + "\")";
 			Statement statement = connection.createStatement();
 			statement.executeUpdate(query);
 		} catch (Exception e) {
@@ -112,12 +111,28 @@ public class DBConnector {
 	}
 
 	public String addClient(String name, String idNumber, String address, String phoneNumber, String email) {
-		// TODO
+		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
+			String query = "INSERT INTO client VALUES(0, \"" + name + "\", \"" + idNumber + "\", \"" + address
+					+ "\", \"" + phoneNumber + "\", \"" + email + "\");";
+			Statement statement = connection.createStatement();
+			statement.executeUpdate(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getLocalizedMessage();
+		}
 		return null;
 	}
 
 	public String addEquipment(String type, String name, String model, String year, String cost) {
-		// TODO
+		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
+			String query = "INSERT INTO equipment VALUES(0, \"" + type + "\", \"" + name + "\", \"" + model + "\", "
+					+ year + ", " + cost + ");";
+			Statement statement = connection.createStatement();
+			statement.executeUpdate(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getLocalizedMessage();
+		}
 		return null;
 	}
 
@@ -132,11 +147,23 @@ public class DBConnector {
 	}
 
 	public void deleteClient(String id) {
-		// TODO
+		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
+			String query = "DELETE FROM client WHERE id=" + id + ";";
+			Statement statement = connection.createStatement();
+			statement.executeUpdate(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void deleteEquipment(String id) {
-		// TODO
+		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
+			String query = "DELETE FROM equipment WHERE id=" + id + ";";
+			Statement statement = connection.createStatement();
+			statement.executeUpdate(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

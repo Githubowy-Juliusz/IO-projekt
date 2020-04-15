@@ -62,17 +62,17 @@
                            <children>
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addClientOnAction" text="Add client" HBox.hgrow="ALWAYS" />
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#refreshClientsOnAction" text="Refresh" HBox.hgrow="ALWAYS" />
-                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedClientOnAction" text="Delete selected" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedClientOnAction" text="Delete selected" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <TableView fx:id="clientsTable">
                            <columns>
-                              <TableColumn prefWidth="62.0" text="ID" />
-                              <TableColumn prefWidth="122.0" text="Full name" />
-                              <TableColumn prefWidth="107.0" text="Identification number" />
-                              <TableColumn prefWidth="98.0" text="Address" />
-                              <TableColumn prefWidth="79.0" text="Phone number" />
-                              <TableColumn prefWidth="131.0" text="E-mail" />
+                              <TableColumn fx:id="clientIdColumn" prefWidth="62.0" text="ID" />
+                              <TableColumn fx:id="clientNameColumn" prefWidth="122.0" text="Full name" />
+                              <TableColumn fx:id="clientIdNumberColumn" prefWidth="107.0" text="Identification number" />
+                              <TableColumn fx:id="clientAddressColumn" prefWidth="98.0" text="Address" />
+                              <TableColumn fx:id="clientPhoneNumberColumn" prefWidth="79.0" text="Phone number" />
+                              <TableColumn fx:id="clientEmailColumn" prefWidth="131.0" text="E-mail" />
                            </columns>
                         </TableView>
                      </children>
@@ -100,17 +100,17 @@
                            <children>
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addEquipmentOnAction" text="Add equipment" HBox.hgrow="ALWAYS" />
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#refreshEquipmentOnAction" text="Refresh" HBox.hgrow="ALWAYS" />
-                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedEquipmentOnAction" text="Delete selected" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedEquipmentOnAction" text="Delete selected" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <TableView fx:id="equipmentTable" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn prefWidth="75.0" text="ID" />
-                              <TableColumn prefWidth="75.0" text="Type" />
-                              <TableColumn prefWidth="75.0" text="Name" />
-                              <TableColumn prefWidth="75.0" text="Model" />
-                              <TableColumn prefWidth="75.0" text="Year" />
-                              <TableColumn prefWidth="75.0" text="Cost" />
+                              <TableColumn fx:id="equipmentIdColumn" prefWidth="75.0" text="ID" />
+                              <TableColumn fx:id="equipmentTypeColumn" prefWidth="75.0" text="Type" />
+                              <TableColumn fx:id="equipmentNameColumn" prefWidth="75.0" text="Name" />
+                              <TableColumn fx:id="equipmentModelColumn" prefWidth="75.0" text="Model" />
+                              <TableColumn fx:id="equipmentYearColumn" prefWidth="75.0" text="Year" />
+                              <TableColumn fx:id="equipmentCostColumn" prefWidth="75.0" text="Cost" />
                            </columns>
                         </TableView>
                      </children>
@@ -123,10 +123,10 @@
                      <children>
                         <TableView fx:id="archiveTable" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn prefWidth="75.0" text="ID" />
-                              <TableColumn prefWidth="171.0" text="ID of equipment" />
-                              <TableColumn prefWidth="189.0" text="ID of client" />
-                              <TableColumn prefWidth="132.0" text="Date" />
+                              <TableColumn fx:id="archiveIdColumn" prefWidth="75.0" text="ID" />
+                              <TableColumn fx:id="archiveIdEquipmentColumn" prefWidth="171.0" text="ID of equipment" />
+                              <TableColumn fx:id="archiveIdClientColumn" prefWidth="189.0" text="ID of client" />
+                              <TableColumn fx:id="archiveDateColumn" prefWidth="132.0" text="Date" />
                            </columns>
                         </TableView>
                      </children>
