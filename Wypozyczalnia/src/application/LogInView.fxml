@@ -16,7 +16,7 @@
                   <Insets />
                </opaqueInsets>
             </TextField>
-            <TextField fx:id="passwordInput" prefHeight="27.0" prefWidth="150.0" promptText="Password" />
+            <PasswordField fx:id="passwordInput" prefHeight="27.0" prefWidth="150.0" promptText="Password" />
             <Button fx:id="logInButton" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#logInButtonOnAction" text="Log in" />
          </children>
       </VBox>

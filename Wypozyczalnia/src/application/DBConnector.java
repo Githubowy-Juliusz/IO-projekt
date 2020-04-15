@@ -18,6 +18,22 @@ public class DBConnector {
 	private final String databaseUser = "root";
 	private final String userPassword = "githubowyjuliusz";
 
+	public Boolean logIn(String login, String password) {
+		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery("SELECT * FROM admin;");
+			while (result.next()) {
+				String login_ = result.getString(1);
+				String password_ = result.getString(2);
+				if (login.equals(login_) && password.equals(password_))
+					return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public List<Order> selectOrders() {
 		List<Order> orders = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {

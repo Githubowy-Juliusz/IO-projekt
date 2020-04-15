@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -44,7 +45,7 @@ public class FXController {
 	private TextField loginInput;
 
 	@FXML
-	private TextField passwordInput;
+	private PasswordField passwordInput;
 
 	@FXML
 	private Button logInButton;
@@ -54,8 +55,12 @@ public class FXController {
 
 	@FXML
 	void logInButtonOnAction(ActionEvent event) {
-		// TODO validate login and password
-		changeScene((Parent) logInViewBorderPane, "MainView");
+		String login = loginInput.getText();
+		String password = passwordInput.getText();
+		if (database.logIn(login, password))
+			changeScene((Parent) logInViewBorderPane, "MainView");
+		else
+			popupWindow.display("Error", "Wrong login and/or password.");
 	}
 
 	// MainView
@@ -113,7 +118,7 @@ public class FXController {
 		String id_equipment = orderIdEqupimentInput.getText();
 		String id_client = orderIdClientInput.getText();
 		String date = orderDateInput.getText();
-		if (id_equipment.contentEquals("")) {
+		if (id_equipment.equals("")) {
 			createPopupWindow("Warning", "Equipment id can't be empty.");
 			return;
 		}
@@ -175,7 +180,26 @@ public class FXController {
 		String address = clientAddressInput.getText();
 		String phoneNumber = clientPhoneNumberInput.getText();
 		String email = clientEmailInput.getText();
-		// TODO checking values
+		if (name.equals("")) {
+			createPopupWindow("Warning", "Name can't be empty.");
+			return;
+		}
+		if (idNumber.equals("")) {
+			createPopupWindow("Warning", "Identification number can't be empty.");
+			return;
+		}
+		if (address.equals("")) {
+			createPopupWindow("Warning", "Address can't be empty.");
+			return;
+		}
+		if (phoneNumber.equals("")) {
+			createPopupWindow("Warning", "Phone number can't be empty.");
+			return;
+		}
+		if (email.equals("")) {
+			createPopupWindow("Warning", "E-mail can't be empty.");
+			return;
+		}
 		String exceptionMessage = database.addClient(name, idNumber, address, phoneNumber, email);
 		if (exceptionMessage != null) {
 			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
@@ -203,7 +227,54 @@ public class FXController {
 
 	@FXML
 	void addEquipmentOnAction(ActionEvent event) {
-		// TODO
+		String type = equipmentTypeInput.getText();
+		String name = equipmentNameInput.getText();
+		String model = equipmentModelInput.getText();
+		String year = equipmentYearInput.getText();
+		String cost = equipmentCostInput.getText();
+		if (type.equals("")) {
+			createPopupWindow("Warning", "Type can't be empty.");
+			return;
+		}
+		if (name.equals("")) {
+			createPopupWindow("Warning", "Name can't be empty.");
+			return;
+		}
+		if (model.equals("")) {
+			createPopupWindow("Warning", "Model can't be empty.");
+			return;
+		}
+		if (year.equals("")) {
+			createPopupWindow("Warning", "Year can't be empty.");
+			return;
+		}
+		if (cost.equals("")) {
+			createPopupWindow("Warning", "Cost can't be empty.");
+			return;
+		}
+		try {
+			Integer.parseInt(year);
+		} catch (Exception e) {
+			createPopupWindow("Warning", "Year has to be integer!");
+			return;
+		}
+		try {
+			Float.parseFloat(cost);
+		} catch (Exception e) {
+			createPopupWindow("Warning", "Cost has to be float!");
+			return;
+		}
+		String exceptionMessage = database.addEquipment(type, name, model, year, cost);
+		if (exceptionMessage != null) {
+			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
+		} else {
+			equipmentTypeInput.clear();
+			equipmentNameInput.clear();
+			equipmentModelInput.clear();
+			equipmentYearInput.clear();
+			equipmentCostInput.clear();
+			refreshEquipmentTable();
+		}
 	}
 
 	@FXML
