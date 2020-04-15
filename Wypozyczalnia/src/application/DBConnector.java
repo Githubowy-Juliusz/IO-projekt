@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.Client;
+import models.Equipment;
 import models.Order;
 
 public class DBConnector {
@@ -37,13 +38,64 @@ public class DBConnector {
 	}
 
 	public List<Client> selectClients() {
-		// TODO
-		return null;
+		List<Client> clients = new ArrayList<>();
+		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery("SELECT * FROM client;");
+			while (result.next()) {
+				Integer id = result.getInt(1);
+				String name = result.getString(2);
+				String identification_number = result.getString(3);
+				String address = result.getString(4);
+				String phone_number = result.getString(5);
+				String email = result.getString(6);
+				Client client = new Client(id, name, identification_number, address, phone_number, email);
+				clients.add(client);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return clients;
+	}
+
+	public List<Equipment> selectEquipment() {
+		List<Equipment> equipmentList = new ArrayList<>();
+		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery("SELECT * FROM equipment;");
+			while (result.next()) {
+				Integer id = result.getInt(1);
+				String type = result.getString(2);
+				String name = result.getString(3);
+				String model = result.getString(4);
+				Integer year = result.getInt(5);
+				Float cost = result.getFloat(6);
+				Equipment equipment = new Equipment(id, type, name, model, year, cost);
+				equipmentList.add(equipment);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return equipmentList;
 	}
 
 	public List<Order> selectArchive() {
-		// TODO
-		return null;
+		List<Order> archiveList = new ArrayList<>();
+		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery("SELECT * FROM archive;");
+			while (result.next()) {
+				Integer id = result.getInt(1);
+				Integer id_equipment = result.getInt(2);
+				Integer id_client = result.getInt(3);
+				Date date = result.getDate(4);
+				Order archive = new Order(id, id_client, id_equipment, date);
+				archiveList.add(archive);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return archiveList;
 	}
 
 	public String addOrder(String id_equipment, String id_client, String date) {

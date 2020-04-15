@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.mysql.cj.xdevapi.Client;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import models.Client;
 import models.Equipment;
 import models.Order;
 
@@ -72,13 +71,13 @@ public class FXController {
 	private TableView<Order> ordersTable;
 
 	@FXML
-	private TableView<String> clientsTable;
+	private TableView<Client> clientsTable;
 
 	@FXML
-	private TableView<String> equipmentTable;
+	private TableView<Equipment> equipmentTable;
 
 	@FXML
-	private TableView<String> archiveTable;
+	private TableView<Order> archiveTable;
 
 	@FXML
 	private TabPane tabPane;
@@ -173,7 +172,7 @@ public class FXController {
 
 	@FXML
 	void refreshClientsOnAction(ActionEvent event) {
-
+		refreshClientsTable();
 	}
 
 	@FXML
@@ -188,7 +187,7 @@ public class FXController {
 
 	@FXML
 	void refreshEquipmentOnAction(ActionEvent event) {
-
+		refreshEquipmentTable();
 	}
 
 	@FXML
@@ -244,15 +243,52 @@ public class FXController {
 	}
 
 	private void refreshClientsTable() {
-		// TODO
+		List<Client> clients = database.selectClients();
+		clientIdColumn.setCellValueFactory(new PropertyValueFactory<Client, Integer>("id"));
+		clientNameColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("name"));
+		clientIdNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("identification_number"));
+		clientAddressColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("address"));
+		clientPhoneNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("phone_number"));
+		clientEmailColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("email"));
+		clientsTableContent = FXCollections.observableArrayList();
+		clientsTable.setItems(clientsTableContent);
+		if (clients != null) {
+			Platform.runLater(() -> {
+				clientsTableContent.addAll(clients);
+			});
+		}
 	}
 
 	private void refreshEquipmentTable() {
-		// TODO
+		List<Equipment> equipmentList = database.selectEquipment();
+		equipmentIdColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Integer>("id"));
+		equipmentTypeColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("type"));
+		equipmentNameColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("name"));
+		equipmentModelColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("model"));
+		equipmentYearColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Integer>("year"));
+		equipmentCostColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Float>("cost"));
+		equipmentTableContent = FXCollections.observableArrayList();
+		equipmentTable.setItems(equipmentTableContent);
+		if (equipmentList != null) {
+			Platform.runLater(() -> {
+				equipmentTableContent.addAll(equipmentList);
+			});
+		}
 	}
 
 	private void refreshArchiveTable() {
-		// TODO
+		List<Order> archiveList = database.selectArchive();
+		archiveIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id"));
+		archiveIdEquipmentColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_equipment"));
+		archiveIdClientColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_client"));
+		archiveDateColumn.setCellValueFactory(new PropertyValueFactory<Order, Date>("date"));
+		archiveTableContent = FXCollections.observableArrayList();
+		archiveTable.setItems(archiveTableContent);
+		if (archiveList != null) {
+			Platform.runLater(() -> {
+				archiveTableContent.addAll(archiveList);
+			});
+		}
 	}
 
 	private void createPopupWindow(String title, String message) {

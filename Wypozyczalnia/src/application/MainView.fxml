@@ -62,7 +62,7 @@
                            <children>
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addClientOnAction" text="Add client" HBox.hgrow="ALWAYS" />
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#refreshClientsOnAction" text="Refresh" HBox.hgrow="ALWAYS" />
-                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedClientOnAction" text="Delete selected" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedClientOnAction" text="Delete selected" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <TableView fx:id="clientsTable">
@@ -100,7 +100,7 @@
                            <children>
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addEquipmentOnAction" text="Add equipment" HBox.hgrow="ALWAYS" />
                               <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#refreshEquipmentOnAction" text="Refresh" HBox.hgrow="ALWAYS" />
-                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedEquipmentOnAction" text="Delete selected" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedEquipmentOnAction" text="Delete selected" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <TableView fx:id="equipmentTable" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
