@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.PopupController">
+   <center>
+      <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="234.0" spacing="1.0" BorderPane.alignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+         <children>
+            <Label fx:id="popupMessage" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Message" textAlignment="CENTER" VBox.vgrow="ALWAYS" />
+            <Button fx:id="okButton" alignment="CENTER" contentDisplay="TOP" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#okButtonOnAction" prefWidth="75.0" text="Ok" />
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

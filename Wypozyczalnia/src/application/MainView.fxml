@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="mainViewBorderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXController">
+   <center>
+      <TabPane fx:id="tabPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab fx:id="ordersTab" onSelectionChanged="#ordersTabChange" text="Orders">
+            <content>
+                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                     <children>
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
+                           <children>
+                              <TextField fx:id="orderIdEqupimentInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="ID of equipment" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="orderIdClientInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="ID of client" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="orderDateInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Date" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
+                           <children>
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addOrderOnAction" text="Add order" HBox.hgrow="ALWAYS" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#refreshOrdersOnAction" text="Refresh" HBox.hgrow="ALWAYS" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#archiveSelectedOrderOnAction" text="Archive selected" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="ordersTable" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" VBox.vgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="orderIdColumn" maxWidth="1.7976931348623157E308" minWidth="20.0" prefWidth="112.0" text="ID" />
+                              <TableColumn fx:id="orderIdEquipmentColumn" maxWidth="1.7976931348623157E308" minWidth="20.0" prefWidth="166.0" text="ID of equipment" />
+                              <TableColumn fx:id="orderIdClientColumn" prefWidth="159.0" text="ID of client" />
+                              <TableColumn fx:id="orderDateColumn" prefWidth="162.0" text="Date" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+            </content>
+          </Tab>
+          <Tab fx:id="clientsTab" onSelectionChanged="#clientsTabChange" text="Clients">
+            <content>
+                  <VBox>
+                     <children>
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
+                           <children>
+                              <TextField fx:id="clientNameInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Full name" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="clientIdentificationNumberInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Identification number" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
+                           <children>
+                              <TextField fx:id="clientAddressInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Address" />
+                              <TextField fx:id="clientPhoneNumberInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Phone number" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="clientEmailInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="E-mail" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
+                           <children>
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addClientOnAction" text="Add client" HBox.hgrow="ALWAYS" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#refreshClientsOnAction" text="Refresh" HBox.hgrow="ALWAYS" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedClientOnAction" text="Delete selected" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="clientsTable">
+                           <columns>
+                              <TableColumn fx:id="clientIdColumn" prefWidth="62.0" text="ID" />
+                              <TableColumn fx:id="clientNameColumn" prefWidth="122.0" text="Full name" />
+                              <TableColumn fx:id="clientIdNumberColumn" prefWidth="107.0" text="Identification number" />
+                              <TableColumn fx:id="clientAddressColumn" prefWidth="98.0" text="Address" />
+                              <TableColumn fx:id="clientPhoneNumberColumn" prefWidth="79.0" text="Phone number" />
+                              <TableColumn fx:id="clientEmailColumn" prefWidth="131.0" text="E-mail" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+            </content>
+          </Tab>
+            <Tab fx:id="equipmentTab" onSelectionChanged="#equipmentTabChange" text="Equipment">
+              <content>
+                  <VBox>
+                     <children>
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
+                           <children>
+                              <TextField fx:id="equipmentTypeInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Type" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="equipmentNameInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Name" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
+                           <children>
+                              <TextField fx:id="equipmentModelInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Model" />
+                              <TextField fx:id="equipmentYearInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Year" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="equipmentCostInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Cost" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
+                           <children>
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addEquipmentOnAction" text="Add equipment" HBox.hgrow="ALWAYS" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#refreshEquipmentOnAction" text="Refresh" HBox.hgrow="ALWAYS" />
+                              <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteSelectedEquipmentOnAction" text="Delete selected" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="equipmentTable" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="equipmentIdColumn" prefWidth="75.0" text="ID" />
+                              <TableColumn fx:id="equipmentTypeColumn" prefWidth="75.0" text="Type" />
+                              <TableColumn fx:id="equipmentNameColumn" prefWidth="75.0" text="Name" />
+                              <TableColumn fx:id="equipmentModelColumn" prefWidth="75.0" text="Model" />
+                              <TableColumn fx:id="equipmentYearColumn" prefWidth="75.0" text="Year" />
+                              <TableColumn fx:id="equipmentCostColumn" prefWidth="75.0" text="Cost" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+              </content>
+            </Tab>
+            <Tab fx:id="archiveTab" onSelectionChanged="#archiveTabChange" text="Archive">
+               <content>
+                  <VBox>
+                     <children>
+                        <TableView fx:id="archiveTable" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                           <columns>
+                              <TableColumn fx:id="archiveIdColumn" prefWidth="75.0" text="ID" />
+                              <TableColumn fx:id="archiveIdEquipmentColumn" prefWidth="171.0" text="ID of equipment" />
+                              <TableColumn fx:id="archiveIdClientColumn" prefWidth="189.0" text="ID of client" />
+                              <TableColumn fx:id="archiveDateColumn" prefWidth="132.0" text="Date" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+</BorderPane>
