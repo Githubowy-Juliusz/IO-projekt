@@ -149,6 +149,9 @@ public class FXController {
 		if (exceptionMessage != null) {
 			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
 		} else {
+			orderIdEqupimentInput.clear();
+			orderIdClientInput.clear();
+			orderDateInput.clear();
 			refreshOrdersTable();
 		}
 	}
@@ -167,7 +170,23 @@ public class FXController {
 
 	@FXML
 	void addClientOnAction(ActionEvent event) {
-
+		String name = clientNameInput.getText();
+		String idNumber = clientIdentificationNumberInput.getText();
+		String address = clientAddressInput.getText();
+		String phoneNumber = clientPhoneNumberInput.getText();
+		String email = clientEmailInput.getText();
+		// TODO checking values
+		String exceptionMessage = database.addClient(name, idNumber, address, phoneNumber, email);
+		if (exceptionMessage != null) {
+			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
+		} else {
+			clientNameInput.clear();
+			clientIdentificationNumberInput.clear();
+			clientAddressInput.clear();
+			clientPhoneNumberInput.clear();
+			clientEmailInput.clear();
+			refreshClientsTable();
+		}
 	}
 
 	@FXML
@@ -177,12 +196,14 @@ public class FXController {
 
 	@FXML
 	void deleteSelectedClientOnAction(ActionEvent event) {
-
+		Client selectedClient = clientsTable.getSelectionModel().getSelectedItem();
+		database.deleteClient(selectedClient.getId().toString());
+		refreshClientsTable();
 	}
 
 	@FXML
 	void addEquipmentOnAction(ActionEvent event) {
-
+		// TODO
 	}
 
 	@FXML
@@ -192,7 +213,9 @@ public class FXController {
 
 	@FXML
 	void deleteSelectedEquipmentOnAction(ActionEvent event) {
-
+		Equipment selectedEquipment = equipmentTable.getSelectionModel().getSelectedItem();
+		database.deleteEquipment(selectedEquipment.getId().toString());
+		refreshEquipmentTable();
 	}
 
 	@FXML
