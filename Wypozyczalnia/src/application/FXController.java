@@ -22,6 +22,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import models.Archive;
 import models.Client;
 import models.Equipment;
 import models.Order;
@@ -35,7 +36,7 @@ public class FXController {
 
 	private ObservableList<Equipment> equipmentTableContent;
 
-	private ObservableList<Order> archiveTableContent;
+	private ObservableList<Archive> archiveTableContent;
 
 	private PopupWindow popupWindow;
 
@@ -82,7 +83,7 @@ public class FXController {
 	private TableView<Equipment> equipmentTable;
 
 	@FXML
-	private TableView<Order> archiveTable;
+	private TableView<Archive> archiveTable;
 
 	@FXML
 	private TabPane tabPane;
@@ -109,9 +110,12 @@ public class FXController {
 	private TableColumn<Equipment, Float> equipmentCostColumn;
 
 	@FXML
-	private TableColumn<Order, Integer> archiveIdColumn, archiveIdEquipmentColumn, archiveIdClientColumn;
+	private TableColumn<Archive, Integer> archiveIdColumn;
 	@FXML
-	private TableColumn<Order, Date> archiveDateColumn;
+	private TableColumn<Archive, String> archiveClientNameColumn, archiveClientIdNumberColumn,
+			archiveEquipmentNameColumn, archiveEquipmentModelColumn;
+	@FXML
+	private TableColumn<Archive, Date> archiveDateColumn;
 
 	@FXML
 	void addOrderOnAction(ActionEvent event) {
@@ -371,11 +375,14 @@ public class FXController {
 	}
 
 	private void refreshArchiveTable() {
-		List<Order> archiveList = database.selectArchive();
-		archiveIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id"));
-		archiveIdEquipmentColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_equipment"));
-		archiveIdClientColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_client"));
-		archiveDateColumn.setCellValueFactory(new PropertyValueFactory<Order, Date>("date"));
+		List<Archive> archiveList = database.selectArchive();
+		archiveIdColumn.setCellValueFactory(new PropertyValueFactory<Archive, Integer>("id"));
+		archiveClientNameColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("client_name"));
+		archiveClientIdNumberColumn
+				.setCellValueFactory(new PropertyValueFactory<Archive, String>("client_identification_number"));
+		archiveEquipmentNameColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_name"));
+		archiveEquipmentModelColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_model"));
+		archiveDateColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("date"));
 		archiveTableContent = FXCollections.observableArrayList();
 		archiveTable.setItems(archiveTableContent);
 		if (archiveList != null) {
