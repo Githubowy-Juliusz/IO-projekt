@@ -91,8 +91,10 @@ DROP TABLE IF EXISTS `ioapp`.`archive` ;
 
 CREATE TABLE IF NOT EXISTS `ioapp`.`archive` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `id_equipment` INT NOT NULL,
-  `id_client` INT NOT NULL,
+  `client_name` VARCHAR(90) NOT NULL,
+  `client_identification_number` VARCHAR(11) NOT NULL,
+  `equipment_name` VARCHAR(45) NOT NULL,
+  `equipment_model` VARCHAR(45) NOT NULL,
   `date` DATE NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
@@ -106,33 +108,11 @@ DROP TRIGGER IF EXISTS `ioapp`.`orders_BEFORE_DELETE` $$
 USE `ioapp`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `ioapp`.`orders_BEFORE_DELETE` BEFORE DELETE ON `orders` FOR EACH ROW
 BEGIN
-	INSERT INTO archive VALUES(0, old.id_equipment, old.id_client, old.date);
-END$$
-
-USE `ioapp`$$
-DROP TRIGGER IF EXISTS `ioapp`.`archive_BEFORE_UPDATE` $$
-USE `ioapp`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `ioapp`.`archive_BEFORE_UPDATE` BEFORE UPDATE ON `archive` FOR EACH ROW
-BEGIN
-	SIGNAL SQLSTATE '45000'
-	SET MESSAGE_TEXT =
-	'YOU CAN\'T UPDATE THIS TABLE',
-    MYSQL_ERRNO = 1;
-END$$
-
-
-USE `ioapp`$$
-DROP TRIGGER IF EXISTS `ioapp`.`archive_BEFORE_DELETE` $$
-USE `ioapp`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `ioapp`.`archive_BEFORE_DELETE` BEFORE DELETE ON `archive` FOR EACH ROW
-BEGIN
-	IF CURDATE() < old.date + INTERVAL 1 YEAR
-    THEN
-		SIGNAL SQLSTATE '45000'
-		SET MESSAGE_TEXT =
-		'YOU CAN\'T DELETE ORDER FROM ARCHIVE THAT IS NOT 1 YEAR OLD.',
-		MYSQL_ERRNO = 2;
-	END IF;
+	INSERT INTO archive VALUES(0, 
+		(SELECT name FROM ioapp.client WHERE ioapp.client.id=old.id_client),
+		(SELECT identification_number FROM ioapp.client WHERE ioapp.client.id=old.id_client),
+		(SELECT name FROM ioapp.equipment WHERE ioapp.equipment.id=old.id_equipment),
+		(SELECT model FROM ioapp.equipment WHERE ioapp.equipment.id=old.id_equipment), old.date);
 END$$
 
 DELIMITER ;
