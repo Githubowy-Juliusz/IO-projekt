@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.Archive;
 import models.Client;
 import models.Equipment;
 import models.Order;
@@ -95,17 +96,20 @@ public class DBConnector {
 		return equipmentList;
 	}
 
-	public List<Order> selectArchive() {
-		List<Order> archiveList = new ArrayList<>();
+	public List<Archive> selectArchive() {
+		List<Archive> archiveList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery("SELECT * FROM archive ORDER BY id;");
 			while (result.next()) {
 				Integer id = result.getInt(1);
-				Integer id_equipment = result.getInt(2);
-				Integer id_client = result.getInt(3);
-				Date date = result.getDate(4);
-				Order archive = new Order(id, id_client, id_equipment, date);
+				String client_name = result.getString(2);
+				String client_identification_number = result.getString(3);
+				String equipment_name = result.getString(4);
+				String equipment_model = result.getString(5);
+				Date date = result.getDate(6);
+				Archive archive = new Archive(id, client_name, client_identification_number, equipment_name,
+						equipment_model, date);
 				archiveList.add(archive);
 			}
 		} catch (Exception e) {
