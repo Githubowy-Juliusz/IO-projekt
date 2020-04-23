@@ -1,0 +1,3 @@
+Aplikacja wymaga stworzonej bazy danych, w folderze SQL jest kod do stworzenia bazy danych i do wypełnienia jej. W projekcie został użyty MySQL, ale pewnie inne DB też zadziałają. Wszelkie ustawienia DB (user, password, JDBCpath) są w DBConnector.
+
+Java version: 8
