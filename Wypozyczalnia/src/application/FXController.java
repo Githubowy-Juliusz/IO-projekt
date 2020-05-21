@@ -263,10 +263,10 @@ public class FXController {
 		if (exceptionMessage != null) {
 			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
 		} else {
-			/*
-			 * clientNameInput.clear(); clientIdentificationNumberInput.clear();
-			 * clientEmailInput.clear(); refreshClientsTable();
-			 */
+			clientNameInput.clear();
+			clientIdentificationNumberInput.clear();
+			clientEmailInput.clear();
+			refreshClientsTable();
 		}
 	}
 
