@@ -64,9 +64,10 @@ public class DBConnector {
 				String name = result.getString(2);
 				String identification_number = result.getString(3);
 				String address = result.getString(4);
-				String phone_number = result.getString(5);
-				String email = result.getString(6);
-				Client client = new Client(id, name, identification_number, address, phone_number, email);
+				String postcode = result.getString(5);
+				String phone_number = result.getString(6);
+				String email = result.getString(7);
+				Client client = new Client(id, name, identification_number, address, postcode, phone_number, email);
 				clients.add(client);
 			}
 		} catch (Exception e) {
@@ -120,7 +121,7 @@ public class DBConnector {
 
 	public String addOrder(String id_equipment, String id_client, String date) {
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
-			String query = "INSERT INTO orders VALUES(0, " + id_equipment + ", " + id_client + ", \"" + date + "\")";
+			String query = "INSERT INTO orders VALUES(0, " + id_equipment + ", " + id_client + ", \'" + date + "\')";
 			Statement statement = connection.createStatement();
 			statement.executeUpdate(query);
 		} catch (Exception e) {
@@ -130,10 +131,11 @@ public class DBConnector {
 		return null;
 	}
 
-	public String addClient(String name, String idNumber, String address, String phoneNumber, String email) {
+	public String addClient(String name, String idNumber, String address, String postcode, String phoneNumber,
+			String email) {
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
-			String query = "INSERT INTO client VALUES(0, \"" + name + "\", \"" + idNumber + "\", \"" + address
-					+ "\", \"" + phoneNumber + "\", \"" + email + "\");";
+			String query = "INSERT INTO client VALUES(0, \'" + name + "\', \'" + idNumber + "\', \'" + address
+					+ "\', \'" + postcode + "\', \'" + phoneNumber + "\', \'" + email + "\');";
 			Statement statement = connection.createStatement();
 			statement.executeUpdate(query);
 		} catch (Exception e) {
@@ -145,7 +147,7 @@ public class DBConnector {
 
 	public String addEquipment(String type, String name, String model, String year, String cost) {
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
-			String query = "INSERT INTO equipment VALUES(0, \"" + type + "\", \"" + name + "\", \"" + model + "\", "
+			String query = "INSERT INTO equipment VALUES(0, \'" + type + "\', \'" + name + "\', \'" + model + "\', "
 					+ year + ", " + cost + ");";
 			Statement statement = connection.createStatement();
 			statement.executeUpdate(query);

@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS `ioapp`.`client` (
   `name` VARCHAR(90) NOT NULL,
   `identification_number` VARCHAR(11) NOT NULL,
   `address` VARCHAR(45) NOT NULL,
+  `postcode` VARCHAR(10) NOT NULL,
   `phone_number` VARCHAR(16) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),

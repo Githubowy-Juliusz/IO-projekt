@@ -1,5 +1,5 @@
 import random, string
-'''
+
 #client
 name_list = ["Adam", "Stefan", "Andrzej", "Juliusz", "Mariusz", "Janusz", "Mikołaj", "Agata", "Aneta", "Aleksandara", "Ania", "Alicja", "Beata", "Martyna", "Małgorzata"]
 nazwiska_list = ["Nowak", "Kowal", "Sten", "Woźniak", "Pasternak", "Dudek", "Wróbel", "Kwiecień", "Krupa", "Socha", "Skiba", "Towarek", "Potok", "Piątek", "Hoffmann", "Miller", "Szulc", "Grec"]
@@ -13,6 +13,9 @@ for i in range(1, 201):
 	pesel = ""
 	phone_number = ""
 	address = ""
+	postcode = str(random.randint(10, 99))
+	postcode += "-"
+	postcode += str(random.randint(100, 999))
 	email = ""
 	name = name_list[random.randint(0, len(name_list)-1)]
 	last_name = nazwiska_list[random.randint(0, len(nazwiska_list)-1)]
@@ -24,7 +27,6 @@ for i in range(1, 201):
 		if address not in used_addresses:
 			used_addresses.append(address)
 			break
-			
 	while True:
 		pesel = str(random.randint(10000000000, 99999999999))
 		if pesel not in used_pesel:
@@ -44,14 +46,13 @@ for i in range(1, 201):
 			break
 		rand_string += str(random.randint(0, 9))
 
-	print(f"INSERT INTO ioapp.client VALUES(0, \"{full_name}\", \"{pesel}\", \"{address}\", \"{phone_number}\", \"{email}\");")
-'''
-'''
+	print(f"INSERT INTO ioapp.client VALUES({i}, \'{full_name}\', \'{pesel}\', \'{address}\', \'{postcode}\', \'{phone_number}\', \'{email}\');")
+
 #equipment
 types_and_names = [("Instrument dęty", "Puzon"), ("Instrument dęty", "Klarnet"), ("Instrument dęty", "Flet"), ("Instrument strunowy", "Gitara"), ("Instrument strunowy", "Gitara elektryczna"), ("Instrument strunowy", "Gitara basowa"), ("Instrument strunowy", "Gitara"), ("Instrument strunowy", "Skrzypce")]
 
 
-for i in range (0, 501):
+for i in range (1, 501):
 	model = "".join(random.choices(string.ascii_uppercase + string.digits, k=5))
 	name = types_and_names[random.randint(0, len(types_and_names) - 1)]
 	type_ = name[0]
@@ -60,17 +61,17 @@ for i in range (0, 501):
 	cost = random.uniform(100.0, 10000.0)
 	cost = str(round(cost, 2))
 
-	print(f"INSERT INTO ioapp.equipment VALUES(0, \"{type_}\", \"{name}\", \"{model}\", {year}, {cost});")
-'''
+	print(f"INSERT INTO ioapp.equipment VALUES({i}, \'{type_}\', \'{name}\', \'{model}\', {year}, {cost});")
+
 
 #orders
 taken_equipment = []
-for i in range(0, 200):
-	client = str(random.randint(1, 201))
+for i in range(1, 201):
+	client = str(random.randint(1, 200))
 	equipment = 0
 	while True:
-		equipment = random.randint(0, 501)
+		equipment = random.randint(1, 500)
 		if equipment not in taken_equipment:
 			taken_equipment.append(equipment)
 			break
-	print(f"INSERT INTO ioapp.orders VALUES(0, {equipment}, {client}, \"2020-04-13\");")
+	print(f"INSERT INTO ioapp.orders VALUES({i}, {equipment}, {client}, \'2020-04-13\');")

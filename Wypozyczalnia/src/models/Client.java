@@ -5,16 +5,18 @@ public class Client {
 	String name;
 	String identification_number;
 	String address;
+	String postcode;
 	String phone_number;
 	String email;
 
-	public Client(Integer id, String name, String identification_number, String address, String phone_number,
-			String email) {
+	public Client(Integer id, String name, String identification_number, String address, String postcode,
+			String phone_number, String email) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.identification_number = identification_number;
 		this.address = address;
+		this.postcode = postcode;
 		this.phone_number = phone_number;
 		this.email = email;
 	}
@@ -49,6 +51,14 @@ public class Client {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getPostcode() {
+		return postcode;
+	}
+
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
 	}
 
 	public String getPhone_number() {

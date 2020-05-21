@@ -48,12 +48,13 @@
                         <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
                            <children>
                               <TextField fx:id="clientNameInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Full name" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="clientPostcodeInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Postcode" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="clientIdentificationNumberInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Identification number" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
                            <children>
-                              <TextField fx:id="clientAddressInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Address" />
+                              <TextField fx:id="clientAddressInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Address" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="clientPhoneNumberInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Phone number" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="clientEmailInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="E-mail" HBox.hgrow="ALWAYS" />
                            </children>
@@ -71,6 +72,7 @@
                               <TableColumn fx:id="clientNameColumn" prefWidth="122.0" text="Full name" />
                               <TableColumn fx:id="clientIdNumberColumn" prefWidth="107.0" text="Identification number" />
                               <TableColumn fx:id="clientAddressColumn" prefWidth="98.0" text="Address" />
+                              <TableColumn fx:id="clientPostcodeColumn" prefWidth="98.0" text="Postcode" />
                               <TableColumn fx:id="clientPhoneNumberColumn" prefWidth="79.0" text="Phone number" />
                               <TableColumn fx:id="clientEmailColumn" prefWidth="131.0" text="E-mail" />
                            </columns>

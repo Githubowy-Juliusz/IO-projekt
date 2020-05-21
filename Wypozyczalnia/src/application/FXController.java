@@ -72,8 +72,15 @@ public class FXController {
 
 	@FXML
 	private TextField orderIdEqupimentInput, orderIdClientInput, orderDateInput, clientNameInput,
-			clientIdentificationNumberInput, clientAddressInput, clientPhoneNumberInput, clientEmailInput,
-			equipmentTypeInput, equipmentNameInput, equipmentModelInput, equipmentYearInput, equipmentCostInput;
+			clientIdentificationNumberInput, clientAddressInput, clientPostcodeInput, clientPhoneNumberInput,
+			clientEmailInput, equipmentTypeInput, equipmentNameInput, equipmentModelInput, equipmentYearInput,
+			equipmentCostInput;
+
+	@FXML
+	private TabPane tabPane;
+
+	@FXML
+	private Tab ordersTab, clientsTab, equipmentTab, archiveTab;
 
 	@FXML
 	private TableView<Order> ordersTable;
@@ -88,12 +95,6 @@ public class FXController {
 	private TableView<Archive> archiveTable;
 
 	@FXML
-	private TabPane tabPane;
-
-	@FXML
-	private Tab ordersTab, clientsTab, equipmentTab, archiveTab;
-
-	@FXML
 	private TableColumn<Order, Integer> orderIdColumn, orderIdEquipmentColumn, orderIdClientColumn;
 	@FXML
 	private TableColumn<Order, Date> orderDateColumn;
@@ -102,7 +103,7 @@ public class FXController {
 	private TableColumn<Client, Integer> clientIdColumn;
 	@FXML
 	private TableColumn<Client, String> clientNameColumn, clientIdNumberColumn, clientAddressColumn,
-			clientPhoneNumberColumn, clientEmailColumn;
+			clientPostcodeColumn, clientPhoneNumberColumn, clientEmailColumn;
 
 	@FXML
 	private TableColumn<Equipment, Integer> equipmentIdColumn, equipmentYearColumn;
@@ -184,6 +185,7 @@ public class FXController {
 		String name = clientNameInput.getText();
 		String idNumber = clientIdentificationNumberInput.getText();
 		String address = clientAddressInput.getText();
+		String postcode = clientPostcodeInput.getText();
 		String phoneNumber = clientPhoneNumberInput.getText();
 		String email = clientEmailInput.getText();
 
@@ -198,6 +200,10 @@ public class FXController {
 		}
 		if (address.equals("")) {
 			createPopupWindow("Warning", "Address can't be empty.");
+			return;
+		}
+		if (postcode.equals("")) {
+			createPopupWindow("Warning", "Postcode can't be empty.");
 			return;
 		}
 		if (phoneNumber.equals("")) {
@@ -259,12 +265,29 @@ public class FXController {
 			return;
 		}
 
-		String exceptionMessage = database.addClient(name, idNumber, address, phoneNumber, email);
+		String postcodeRegex = "^\\d{2}-\\d{3}$";
+		pattern = Pattern.compile(postcodeRegex);
+		matcher = pattern.matcher(postcode);
+		if (!matcher.matches()) {
+			createPopupWindow("Warning", "Incorrect postcode.");
+			return;
+		}
+
+		String exceptionMessage = database.addClient(name, idNumber, address, postcode, phoneNumber, email);
 		if (exceptionMessage != null) {
-			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
+			String identificationAlreadyInDatabaseRegex = "^.*identification_number_UNIQUE.*$";
+			pattern = Pattern.compile(identificationAlreadyInDatabaseRegex);
+			matcher = pattern.matcher(exceptionMessage);
+			if (matcher.matches())
+				createPopupWindow("Warning", "Client with that identification number is already in database.");
+			else
+				createPopupWindow("Error", "Following error occured: " + exceptionMessage);
 		} else {
 			clientNameInput.clear();
 			clientIdentificationNumberInput.clear();
+			clientAddressInput.clear();
+			clientPostcodeInput.clear();
+			clientPhoneNumberInput.clear();
 			clientEmailInput.clear();
 			refreshClientsTable();
 		}
@@ -399,6 +422,7 @@ public class FXController {
 		clientNameColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("name"));
 		clientIdNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("identification_number"));
 		clientAddressColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("address"));
+		clientPostcodeColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("postcode"));
 		clientPhoneNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("phone_number"));
 		clientEmailColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("email"));
 		clientsTableContent = FXCollections.observableArrayList();
