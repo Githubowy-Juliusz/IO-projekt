@@ -13,9 +13,10 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			BorderPane root = (BorderPane) FXMLLoader.load(getClass().getResource("LogInView.fxml"));
-			Scene scene = new Scene(root, 700, 400);
+			Scene scene = new Scene(root, 1000, 400);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			this.primaryStage = primaryStage;
+			primaryStage.setMaximized(true);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (Exception e) {
