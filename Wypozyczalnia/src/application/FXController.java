@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -184,6 +186,8 @@ public class FXController {
 		String address = clientAddressInput.getText();
 		String phoneNumber = clientPhoneNumberInput.getText();
 		String email = clientEmailInput.getText();
+
+		// CHECKING IF INPUTS AREN'T EMPTY
 		if (name.equals("")) {
 			createPopupWindow("Warning", "Name can't be empty.");
 			return;
@@ -204,16 +208,65 @@ public class FXController {
 			createPopupWindow("Warning", "E-mail can't be empty.");
 			return;
 		}
+		if (phoneNumber.length() != 9) {
+			createPopupWindow("Warning", "Phone number has to be 9 digits long.");
+			return;
+		}
+
+		// INTEGER VALIDATIONS
+		try {
+			Integer tmp = Integer.parseInt(phoneNumber);
+			if (tmp < 0) {
+				throw new Exception("Phone number is negative!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			createPopupWindow("Warning", "Phone number has to be a positive number.");
+			return;
+		}
+		try {
+			Integer tmp = Integer.parseInt(idNumber);
+			if (tmp < 0) {
+				throw new Exception("Identification number is negative!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			createPopupWindow("Warning", "Identification number has to be a positive number.");
+			return;
+		}
+
+		// REGEX VALIDATIONS
+		String emailRegex = "^[^@\\s]+@[^@\\s\\.]+\\.[^@\\.\\s]+$";
+		Pattern pattern = Pattern.compile(emailRegex);
+		Matcher matcher = pattern.matcher(email);
+		if (!matcher.matches()) {
+			createPopupWindow("Warning", "Incorrect e-mail.");
+			return;
+		}
+		// Examples:
+		// Adress 1
+		// Adress 2a
+		// Adress 3a/1
+		// Adress 4b/2b
+		// Adress 5/3c
+		// Adress 6/4
+
+		String addressRegex = "^(\\p{L}+ )(\\d+|\\d+/\\d+|\\d+\\p{L}{1}/\\d+|\\d+\\p{L}{1}/\\d+\\p{L}{1}|\\d+/\\d+\\p{L}{1})$";
+		pattern = Pattern.compile(addressRegex);
+		matcher = pattern.matcher(address);
+		if (!matcher.matches()) {
+			createPopupWindow("Warning", "Incorrect address.");
+			return;
+		}
+
 		String exceptionMessage = database.addClient(name, idNumber, address, phoneNumber, email);
 		if (exceptionMessage != null) {
 			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
 		} else {
-			clientNameInput.clear();
-			clientIdentificationNumberInput.clear();
-			clientAddressInput.clear();
-			clientPhoneNumberInput.clear();
-			clientEmailInput.clear();
-			refreshClientsTable();
+			/*
+			 * clientNameInput.clear(); clientIdentificationNumberInput.clear();
+			 * clientEmailInput.clear(); refreshClientsTable();
+			 */
 		}
 	}
 

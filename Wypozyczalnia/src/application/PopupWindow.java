@@ -20,7 +20,7 @@ public class PopupWindow {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("PopupWindow.fxml"));
 		pane = (BorderPane) loader.load();
 		controller = (PopupController) loader.getController();
-		scene = new Scene(pane, 200, 200);
+		scene = new Scene(pane, 600, 200);
 		stage.setScene(scene);
 	}
 

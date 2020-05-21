@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS `ioapp`.`client` (
   `address` VARCHAR(45) NOT NULL,
   `phone_number` VARCHAR(16) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `identification_number_UNIQUE` (`identification_number` ASC))
 ENGINE = InnoDB;
 
 
