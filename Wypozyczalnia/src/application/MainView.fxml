@@ -93,7 +93,7 @@
                         </HBox>
                         <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
                            <children>
-                              <TextField fx:id="equipmentModelInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Model" />
+                              <TextField fx:id="equipmentModelInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Model" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="equipmentYearInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Year" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="equipmentCostInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Cost" HBox.hgrow="ALWAYS" />
                            </children>

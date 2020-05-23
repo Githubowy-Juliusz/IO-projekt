@@ -2,6 +2,7 @@ package application;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -125,6 +126,7 @@ public class FXController {
 		String id_equipment = orderIdEqupimentInput.getText();
 		String id_client = orderIdClientInput.getText();
 		String date = orderDateInput.getText();
+		// CHECKING IF INPUTS AREN'T EMPTY
 		if (id_equipment.equals("")) {
 			createPopupWindow("Warning", "Equipment id can't be empty.");
 			return;
@@ -137,6 +139,8 @@ public class FXController {
 			createPopupWindow("Warning", "Date can't be empty.");
 			return;
 		}
+
+		// INTEGER VALIDATIONS
 		try {
 			Integer.parseInt(id_equipment);
 		} catch (Exception e) {
@@ -149,6 +153,8 @@ public class FXController {
 			createPopupWindow("Warning", "Client id has to be integer!");
 			return;
 		}
+
+		// DATE VALIDATION
 		try {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			formatter.parse(date);
@@ -221,20 +227,18 @@ public class FXController {
 
 		// INTEGER VALIDATIONS
 		try {
-			Integer tmp = Integer.parseInt(phoneNumber);
-			if (tmp < 0) {
+			Integer phoneNumberAsInt = Integer.parseInt(phoneNumber);
+			if (phoneNumberAsInt < 0)
 				throw new Exception("Phone number is negative!");
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			createPopupWindow("Warning", "Phone number has to be a positive number.");
 			return;
 		}
 		try {
-			Integer tmp = Integer.parseInt(idNumber);
-			if (tmp < 0) {
+			Integer idNumberAsInt = Integer.parseInt(idNumber);
+			if (idNumberAsInt < 0)
 				throw new Exception("Identification number is negative!");
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			createPopupWindow("Warning", "Identification number has to be a positive number.");
@@ -275,6 +279,7 @@ public class FXController {
 
 		String exceptionMessage = database.addClient(name, idNumber, address, postcode, phoneNumber, email);
 		if (exceptionMessage != null) {
+			// CHECKING EXCEPTION MESSAGE
 			String identificationAlreadyInDatabaseRegex = "^.*identification_number_UNIQUE.*$";
 			pattern = Pattern.compile(identificationAlreadyInDatabaseRegex);
 			matcher = pattern.matcher(exceptionMessage);
@@ -312,6 +317,8 @@ public class FXController {
 		String model = equipmentModelInput.getText();
 		String year = equipmentYearInput.getText();
 		String cost = equipmentCostInput.getText();
+
+		// CHECKING IF INPUTS AREN'T EMPTY
 		if (type.equals("")) {
 			createPopupWindow("Warning", "Type can't be empty.");
 			return;
@@ -332,18 +339,49 @@ public class FXController {
 			createPopupWindow("Warning", "Cost can't be empty.");
 			return;
 		}
+
+		// INTEGER VALIDATION
+		Integer currentYear = LocalDateTime.now().getYear();
 		try {
-			Integer.parseInt(year);
+			Integer yearAsInt = Integer.parseInt(year);
+			if (yearAsInt < 0)
+				throw new Exception("Year can't be negative");
+			if (yearAsInt > currentYear)
+				throw new Exception("Equipment can't be from the future");
 		} catch (Exception e) {
-			createPopupWindow("Warning", "Year has to be integer!");
+			createPopupWindow("Warning", "Year has to be between 0 and " + currentYear.toString());
 			return;
 		}
+
+		// DOUBLE VALIDATION
 		try {
-			Float.parseFloat(cost);
+			Double costAsDouble = Double.parseDouble(cost);
+			if (costAsDouble <= 0 || costAsDouble > 10000)
+				throw new Exception("Cost can't be negative or bigger than 10000");
+			// rounding to 2 decimal places
+			costAsDouble = (double) (Math.round(costAsDouble * 100.0) / 100.0);
+			cost = costAsDouble.toString();
 		} catch (Exception e) {
-			createPopupWindow("Warning", "Cost has to be float!");
+			createPopupWindow("Warning", "Cost has to be between 0 and 10000");
 			return;
 		}
+
+		// REGEX VALIDATIONS
+
+		String nameAndTypeRegex = "^\\p{L}+$";
+		Pattern pattern = Pattern.compile(nameAndTypeRegex);
+		Matcher matcher = pattern.matcher(name);
+		if (!matcher.matches()) {
+			createPopupWindow("Warning", "Name can only contain letters.");
+			return;
+		}
+
+		matcher = pattern.matcher(type);
+		if (!matcher.matches()) {
+			createPopupWindow("Warning", "Type can only contain letters.");
+			return;
+		}
+
 		String exceptionMessage = database.addEquipment(type, name, model, year, cost);
 		if (exceptionMessage != null) {
 			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
