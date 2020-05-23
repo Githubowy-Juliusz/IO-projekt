@@ -1,8 +1,6 @@
 package application;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,7 +14,6 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -31,7 +28,14 @@ import models.Equipment;
 import models.Order;
 
 public class FXController {
+	// ACCESS TO DB
 	private DBConnector database = new DBConnector();
+
+	// VALIDATES DATA
+	private Validator validator = new Validator();
+
+	// POPUP WINDOW THAT SHOWS ERROR MESSAGE
+	private PopupWindow popupWindow;
 
 	private ObservableList<Order> ordersTableContent;
 
@@ -41,8 +45,6 @@ public class FXController {
 
 	private ObservableList<Archive> archiveTableContent;
 
-	private PopupWindow popupWindow;
-
 	// LogInView
 
 	@FXML
@@ -50,9 +52,6 @@ public class FXController {
 
 	@FXML
 	private PasswordField passwordInput;
-
-	@FXML
-	private Button logInButton;
 
 	@FXML
 	private BorderPane logInViewBorderPane;
@@ -71,10 +70,18 @@ public class FXController {
 	@FXML
 	private BorderPane mainViewBorderPane;
 
+	// ORDER TEXT FIELDS
 	@FXML
-	private TextField orderIdEqupimentInput, orderIdClientInput, orderDateInput, clientNameInput,
-			clientIdentificationNumberInput, clientAddressInput, clientPostcodeInput, clientPhoneNumberInput,
-			clientEmailInput, equipmentTypeInput, equipmentNameInput, equipmentModelInput, equipmentYearInput,
+	private TextField orderIdEqupimentInput, orderIdClientInput, orderDateInput;
+
+	// CLIENT TEXT FIELDS
+	@FXML
+	private TextField clientNameInput, clientIdentificationNumberInput, clientAddressInput, clientPostcodeInput,
+			clientPhoneNumberInput, clientEmailInput;
+
+	// EQUIPMENT TEXT FIELDS
+	@FXML
+	private TextField equipmentTypeInput, equipmentNameInput, equipmentModelInput, equipmentYearInput,
 			equipmentCostInput;
 
 	@FXML
@@ -95,17 +102,20 @@ public class FXController {
 	@FXML
 	private TableView<Archive> archiveTable;
 
+	// ORDER COLUMNS
 	@FXML
 	private TableColumn<Order, Integer> orderIdColumn, orderIdEquipmentColumn, orderIdClientColumn;
 	@FXML
 	private TableColumn<Order, Date> orderDateColumn;
 
+	// CLIENT COLUMNS
 	@FXML
 	private TableColumn<Client, Integer> clientIdColumn;
 	@FXML
 	private TableColumn<Client, String> clientNameColumn, clientIdNumberColumn, clientAddressColumn,
 			clientPostcodeColumn, clientPhoneNumberColumn, clientEmailColumn;
 
+	// EQUIPMENT COLUMNS
 	@FXML
 	private TableColumn<Equipment, Integer> equipmentIdColumn, equipmentYearColumn;
 	@FXML
@@ -113,6 +123,7 @@ public class FXController {
 	@FXML
 	private TableColumn<Equipment, Float> equipmentCostColumn;
 
+	// ARCHIVE COLUMNS
 	@FXML
 	private TableColumn<Archive, Integer> archiveIdColumn;
 	@FXML
@@ -126,46 +137,21 @@ public class FXController {
 		String id_equipment = orderIdEqupimentInput.getText();
 		String id_client = orderIdClientInput.getText();
 		String date = orderDateInput.getText();
-		// CHECKING IF INPUTS AREN'T EMPTY
-		if (id_equipment.equals("")) {
-			createPopupWindow("Warning", "Equipment id can't be empty.");
-			return;
-		}
-		if (id_client.equals("")) {
-			createPopupWindow("Warning", "Client id can't be empty.");
-			return;
-		}
-		if (date.equals("")) {
-			createPopupWindow("Warning", "Date can't be empty.");
-			return;
-		}
-
-		// INTEGER VALIDATIONS
-		try {
-			Integer.parseInt(id_equipment);
-		} catch (Exception e) {
-			createPopupWindow("Warning", "Equipment id has to be integer!");
-			return;
-		}
-		try {
-			Integer.parseInt(id_client);
-		} catch (Exception e) {
-			createPopupWindow("Warning", "Client id has to be integer!");
-			return;
-		}
-
-		// DATE VALIDATION
-		try {
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			formatter.parse(date);
-		} catch (Exception e) {
-			createPopupWindow("Warning", "Date format has to be yyyy-MM-dd!");
+		String validationResult = validator.validateOrder(id_equipment, id_client, date);
+		if (!validationResult.equals("ok")) {
+			popupWindow.display("Warning", validationResult);
 			return;
 		}
 
 		String exceptionMessage = database.addOrder(id_equipment, id_client, date);
 		if (exceptionMessage != null) {
-			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
+			String equipmentAlreadyRentedRegex = "^.*id_equipment_UNIQUE.*$";
+			Pattern pattern = Pattern.compile(equipmentAlreadyRentedRegex);
+			Matcher matcher = pattern.matcher(exceptionMessage);
+			if (matcher.matches())
+				popupWindow.display("Warning", "This equipment is currently rented.");
+			else
+				popupWindow.display("Error", "Following error occured: " + exceptionMessage);
 		} else {
 			orderIdEqupimentInput.clear();
 			orderIdClientInput.clear();
@@ -195,85 +181,9 @@ public class FXController {
 		String phoneNumber = clientPhoneNumberInput.getText();
 		String email = clientEmailInput.getText();
 
-		// CHECKING IF INPUTS AREN'T EMPTY
-		if (name.equals("")) {
-			createPopupWindow("Warning", "Name can't be empty.");
-			return;
-		}
-		if (idNumber.equals("")) {
-			createPopupWindow("Warning", "Identification number can't be empty.");
-			return;
-		}
-		if (address.equals("")) {
-			createPopupWindow("Warning", "Address can't be empty.");
-			return;
-		}
-		if (postcode.equals("")) {
-			createPopupWindow("Warning", "Postcode can't be empty.");
-			return;
-		}
-		if (phoneNumber.equals("")) {
-			createPopupWindow("Warning", "Phone number can't be empty.");
-			return;
-		}
-		if (email.equals("")) {
-			createPopupWindow("Warning", "E-mail can't be empty.");
-			return;
-		}
-		if (phoneNumber.length() != 9) {
-			createPopupWindow("Warning", "Phone number has to be 9 digits long.");
-			return;
-		}
-
-		// INTEGER VALIDATIONS
-		try {
-			Integer phoneNumberAsInt = Integer.parseInt(phoneNumber);
-			if (phoneNumberAsInt < 0)
-				throw new Exception("Phone number is negative!");
-		} catch (Exception e) {
-			e.printStackTrace();
-			createPopupWindow("Warning", "Phone number has to be a positive number.");
-			return;
-		}
-		try {
-			Integer idNumberAsInt = Integer.parseInt(idNumber);
-			if (idNumberAsInt < 0)
-				throw new Exception("Identification number is negative!");
-		} catch (Exception e) {
-			e.printStackTrace();
-			createPopupWindow("Warning", "Identification number has to be a positive number.");
-			return;
-		}
-
-		// REGEX VALIDATIONS
-		String emailRegex = "^[^@\\s]+@[^@\\s\\.]+\\.[^@\\.\\s]+$";
-		Pattern pattern = Pattern.compile(emailRegex);
-		Matcher matcher = pattern.matcher(email);
-		if (!matcher.matches()) {
-			createPopupWindow("Warning", "Incorrect e-mail.");
-			return;
-		}
-		// Examples:
-		// Adress 1
-		// Adress 2a
-		// Adress 3a/1
-		// Adress 4b/2b
-		// Adress 5/3c
-		// Adress 6/4
-
-		String addressRegex = "^(\\p{L}+ )(\\d+|\\d+/\\d+|\\d+\\p{L}{1}/\\d+|\\d+\\p{L}{1}/\\d+\\p{L}{1}|\\d+/\\d+\\p{L}{1})$";
-		pattern = Pattern.compile(addressRegex);
-		matcher = pattern.matcher(address);
-		if (!matcher.matches()) {
-			createPopupWindow("Warning", "Incorrect address.");
-			return;
-		}
-
-		String postcodeRegex = "^\\d{2}-\\d{3}$";
-		pattern = Pattern.compile(postcodeRegex);
-		matcher = pattern.matcher(postcode);
-		if (!matcher.matches()) {
-			createPopupWindow("Warning", "Incorrect postcode.");
+		String validationResult = validator.validateClient(name, idNumber, address, postcode, phoneNumber, email);
+		if (!validationResult.equals("ok")) {
+			popupWindow.display("Warning", validationResult);
 			return;
 		}
 
@@ -281,12 +191,12 @@ public class FXController {
 		if (exceptionMessage != null) {
 			// CHECKING EXCEPTION MESSAGE
 			String identificationAlreadyInDatabaseRegex = "^.*identification_number_UNIQUE.*$";
-			pattern = Pattern.compile(identificationAlreadyInDatabaseRegex);
-			matcher = pattern.matcher(exceptionMessage);
+			Pattern pattern = Pattern.compile(identificationAlreadyInDatabaseRegex);
+			Matcher matcher = pattern.matcher(exceptionMessage);
 			if (matcher.matches())
-				createPopupWindow("Warning", "Client with that identification number is already in database.");
+				popupWindow.display("Warning", "Client with that identification number is already in database.");
 			else
-				createPopupWindow("Error", "Following error occured: " + exceptionMessage);
+				popupWindow.display("Error", "Following error occured: " + exceptionMessage);
 		} else {
 			clientNameInput.clear();
 			clientIdentificationNumberInput.clear();
@@ -318,73 +228,20 @@ public class FXController {
 		String year = equipmentYearInput.getText();
 		String cost = equipmentCostInput.getText();
 
-		// CHECKING IF INPUTS AREN'T EMPTY
-		if (type.equals("")) {
-			createPopupWindow("Warning", "Type can't be empty.");
-			return;
-		}
-		if (name.equals("")) {
-			createPopupWindow("Warning", "Name can't be empty.");
-			return;
-		}
-		if (model.equals("")) {
-			createPopupWindow("Warning", "Model can't be empty.");
-			return;
-		}
-		if (year.equals("")) {
-			createPopupWindow("Warning", "Year can't be empty.");
-			return;
-		}
-		if (cost.equals("")) {
-			createPopupWindow("Warning", "Cost can't be empty.");
+		String validationResult = validator.validateEquipment(type, name, model, year, cost);
+		if (!validationResult.equals("ok")) {
+			popupWindow.display("Warning", validationResult);
 			return;
 		}
 
-		// INTEGER VALIDATION
-		Integer currentYear = LocalDateTime.now().getYear();
-		try {
-			Integer yearAsInt = Integer.parseInt(year);
-			if (yearAsInt < 0)
-				throw new Exception("Year can't be negative");
-			if (yearAsInt > currentYear)
-				throw new Exception("Equipment can't be from the future");
-		} catch (Exception e) {
-			createPopupWindow("Warning", "Year has to be between 0 and " + currentYear.toString());
-			return;
-		}
-
-		// DOUBLE VALIDATION
-		try {
-			Double costAsDouble = Double.parseDouble(cost);
-			if (costAsDouble <= 0 || costAsDouble > 10000)
-				throw new Exception("Cost can't be negative or bigger than 10000");
-			// rounding to 2 decimal places
-			costAsDouble = (double) (Math.round(costAsDouble * 100.0) / 100.0);
-			cost = costAsDouble.toString();
-		} catch (Exception e) {
-			createPopupWindow("Warning", "Cost has to be between 0 and 10000");
-			return;
-		}
-
-		// REGEX VALIDATIONS
-
-		String nameAndTypeRegex = "^\\p{L}+$";
-		Pattern pattern = Pattern.compile(nameAndTypeRegex);
-		Matcher matcher = pattern.matcher(name);
-		if (!matcher.matches()) {
-			createPopupWindow("Warning", "Name can only contain letters.");
-			return;
-		}
-
-		matcher = pattern.matcher(type);
-		if (!matcher.matches()) {
-			createPopupWindow("Warning", "Type can only contain letters.");
-			return;
-		}
+		// ROUNDING TO 2 DECIMAL PLACES
+		Double costAsDouble = Double.parseDouble(cost);
+		costAsDouble = (double) (Math.round(costAsDouble * 100.0) / 100.0);
+		cost = costAsDouble.toString();
 
 		String exceptionMessage = database.addEquipment(type, name, model, year, cost);
 		if (exceptionMessage != null) {
-			createPopupWindow("Error", "Following error occured: " + exceptionMessage);
+			popupWindow.display("Error", "Following error occured: " + exceptionMessage);
 		} else {
 			equipmentTypeInput.clear();
 			equipmentNameInput.clear();
@@ -439,12 +296,23 @@ public class FXController {
 		}
 	}
 
+	@FXML
+	void initialize() {
+		try {
+			popupWindow = new PopupWindow();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void refreshOrdersTable() {
 		List<Order> orders = database.selectOrders();
+
 		orderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id"));
 		orderIdEquipmentColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_equipment"));
 		orderIdClientColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_client"));
 		orderDateColumn.setCellValueFactory(new PropertyValueFactory<Order, Date>("date"));
+
 		ordersTableContent = FXCollections.observableArrayList();
 		ordersTable.setItems(ordersTableContent);
 		if (orders != null) {
@@ -456,6 +324,7 @@ public class FXController {
 
 	private void refreshClientsTable() {
 		List<Client> clients = database.selectClients();
+
 		clientIdColumn.setCellValueFactory(new PropertyValueFactory<Client, Integer>("id"));
 		clientNameColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("name"));
 		clientIdNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("identification_number"));
@@ -463,6 +332,7 @@ public class FXController {
 		clientPostcodeColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("postcode"));
 		clientPhoneNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("phone_number"));
 		clientEmailColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("email"));
+
 		clientsTableContent = FXCollections.observableArrayList();
 		clientsTable.setItems(clientsTableContent);
 		if (clients != null) {
@@ -474,12 +344,14 @@ public class FXController {
 
 	private void refreshEquipmentTable() {
 		List<Equipment> equipmentList = database.selectEquipment();
+
 		equipmentIdColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Integer>("id"));
 		equipmentTypeColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("type"));
 		equipmentNameColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("name"));
 		equipmentModelColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("model"));
 		equipmentYearColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Integer>("year"));
 		equipmentCostColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Float>("cost"));
+
 		equipmentTableContent = FXCollections.observableArrayList();
 		equipmentTable.setItems(equipmentTableContent);
 		if (equipmentList != null) {
@@ -491,6 +363,7 @@ public class FXController {
 
 	private void refreshArchiveTable() {
 		List<Archive> archiveList = database.selectArchive();
+
 		archiveIdColumn.setCellValueFactory(new PropertyValueFactory<Archive, Integer>("id"));
 		archiveClientNameColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("client_name"));
 		archiveClientIdNumberColumn
@@ -498,6 +371,7 @@ public class FXController {
 		archiveEquipmentNameColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_name"));
 		archiveEquipmentModelColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_model"));
 		archiveDateColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("date"));
+
 		archiveTableContent = FXCollections.observableArrayList();
 		archiveTable.setItems(archiveTableContent);
 		if (archiveList != null) {
@@ -507,25 +381,11 @@ public class FXController {
 		}
 	}
 
-	private void createPopupWindow(String title, String message) {
-		popupWindow.display(title, message);
-		System.out.println(message);
-	}
-
 	void changeScene(Parent pane, String fxml) {
 		Parent newPane;
 		try {
 			newPane = FXMLLoader.load(getClass().getResource(fxml + ".fxml"));
 			pane.getScene().setRoot(newPane);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@FXML
-	void initialize() {
-		try {
-			popupWindow = new PopupWindow();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
