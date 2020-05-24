@@ -14,9 +14,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -49,28 +46,6 @@ public class FXController {
 	private ObservableList<Equipment> equipmentTableContent;
 
 	private ObservableList<Archive> archiveTableContent;
-
-	// LogInView
-
-	@FXML
-	private TextField loginInput;
-
-	@FXML
-	private PasswordField passwordInput;
-
-	@FXML
-	private BorderPane logInViewBorderPane;
-
-	@FXML
-	void logInButtonOnAction(ActionEvent event) {
-		String login = loginInput.getText();
-		String password = passwordInput.getText();
-		if (database.logIn(login, password)) {
-			singleton.setEmployee(login);
-			changeScene((Parent) logInViewBorderPane, "MainView");
-		} else
-			popupWindow.display("Error", "Wrong login and/or password.");
-	}
 
 	// MainView
 	@FXML
@@ -311,11 +286,8 @@ public class FXController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
 
-	private void refreshOrdersTable() {
-		List<Order> orders = database.selectOrders();
-
+		// SETTING UP ORDERS TABLE
 		orderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id"));
 		orderIdEquipmentColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_equipment"));
 		orderIdClientColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_client"));
@@ -324,6 +296,37 @@ public class FXController {
 		orderEmployeeColumn.setCellValueFactory(new PropertyValueFactory<Order, String>("employee"));
 		orderCommentColumn.setCellValueFactory(new PropertyValueFactory<Order, String>("comment"));
 
+		// SETTING UP CLIENTS TABLE
+		clientIdColumn.setCellValueFactory(new PropertyValueFactory<Client, Integer>("id"));
+		clientNameColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("name"));
+		clientIdNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("identification_number"));
+		clientAddressColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("address"));
+		clientPostcodeColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("postcode"));
+		clientPhoneNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("phone_number"));
+		clientEmailColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("email"));
+
+		// SETTING UP EQUIPMENT TABLE
+		equipmentIdColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Integer>("id"));
+		equipmentTypeColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("type"));
+		equipmentNameColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("name"));
+		equipmentModelColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("model"));
+		equipmentYearColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Integer>("year"));
+		equipmentCostColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Float>("cost"));
+
+		// SETTING UP ARCHIVE TABLE
+		archiveIdColumn.setCellValueFactory(new PropertyValueFactory<Archive, Integer>("id"));
+		archiveClientNameColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("client_name"));
+		archiveClientIdNumberColumn
+				.setCellValueFactory(new PropertyValueFactory<Archive, String>("client_identification_number"));
+		archiveEquipmentNameColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_name"));
+		archiveEquipmentModelColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_model"));
+		archiveDateFromColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("date_from"));
+		archiveDateUntilColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("date_until"));
+		archiveDateColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("archived_date"));
+	}
+
+	private void refreshOrdersTable() {
+		List<Order> orders = database.selectOrders();
 		ordersTableContent = FXCollections.observableArrayList();
 		ordersTable.setItems(ordersTableContent);
 		if (orders != null) {
@@ -335,15 +338,6 @@ public class FXController {
 
 	private void refreshClientsTable() {
 		List<Client> clients = database.selectClients();
-
-		clientIdColumn.setCellValueFactory(new PropertyValueFactory<Client, Integer>("id"));
-		clientNameColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("name"));
-		clientIdNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("identification_number"));
-		clientAddressColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("address"));
-		clientPostcodeColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("postcode"));
-		clientPhoneNumberColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("phone_number"));
-		clientEmailColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("email"));
-
 		clientsTableContent = FXCollections.observableArrayList();
 		clientsTable.setItems(clientsTableContent);
 		if (clients != null) {
@@ -355,14 +349,6 @@ public class FXController {
 
 	private void refreshEquipmentTable() {
 		List<Equipment> equipmentList = database.selectEquipment();
-
-		equipmentIdColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Integer>("id"));
-		equipmentTypeColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("type"));
-		equipmentNameColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("name"));
-		equipmentModelColumn.setCellValueFactory(new PropertyValueFactory<Equipment, String>("model"));
-		equipmentYearColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Integer>("year"));
-		equipmentCostColumn.setCellValueFactory(new PropertyValueFactory<Equipment, Float>("cost"));
-
 		equipmentTableContent = FXCollections.observableArrayList();
 		equipmentTable.setItems(equipmentTableContent);
 		if (equipmentList != null) {
@@ -374,17 +360,6 @@ public class FXController {
 
 	private void refreshArchiveTable() {
 		List<Archive> archiveList = database.selectArchive();
-
-		archiveIdColumn.setCellValueFactory(new PropertyValueFactory<Archive, Integer>("id"));
-		archiveClientNameColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("client_name"));
-		archiveClientIdNumberColumn
-				.setCellValueFactory(new PropertyValueFactory<Archive, String>("client_identification_number"));
-		archiveEquipmentNameColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_name"));
-		archiveEquipmentModelColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_model"));
-		archiveDateFromColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("date_from"));
-		archiveDateUntilColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("date_until"));
-		archiveDateColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("archived_date"));
-
 		archiveTableContent = FXCollections.observableArrayList();
 		archiveTable.setItems(archiveTableContent);
 		if (archiveList != null) {
@@ -405,17 +380,6 @@ public class FXController {
 
 		// BACK TO STR
 		String date_until = dateUntil.toString();
-		System.out.println(date_until);
 		return date_until;
-	}
-
-	private void changeScene(Parent pane, String fxml) {
-		Parent newPane;
-		try {
-			newPane = FXMLLoader.load(getClass().getResource(fxml + ".fxml"));
-			pane.getScene().setRoot(newPane);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }
