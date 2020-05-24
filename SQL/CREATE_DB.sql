@@ -48,33 +48,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ioapp`.`orders`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `ioapp`.`orders` ;
-
-CREATE TABLE IF NOT EXISTS `ioapp`.`orders` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `id_equipment` INT NOT NULL,
-  `id_client` INT NOT NULL,
-  `date` DATE NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_orders_1_idx` (`id_equipment` ASC),
-  INDEX `fk_orders_2_idx` (`id_client` ASC),
-  UNIQUE INDEX `id_equipment_UNIQUE` (`id_equipment` ASC),
-  CONSTRAINT `fk_orders_1`
-    FOREIGN KEY (`id_equipment`)
-    REFERENCES `ioapp`.`equipment` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_orders_2`
-    FOREIGN KEY (`id_client`)
-    REFERENCES `ioapp`.`client` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `ioapp`.`admin`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `ioapp`.`admin` ;
@@ -83,6 +56,41 @@ CREATE TABLE IF NOT EXISTS `ioapp`.`admin` (
   `login` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`login`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `ioapp`.`orders`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `ioapp`.`orders` ;
+
+CREATE TABLE IF NOT EXISTS `ioapp`.`orders` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `id_equipment` INT NOT NULL,
+  `id_client` INT NOT NULL,
+  `date_from` DATE NOT NULL,
+  `date_until` DATE NOT NULL,
+  `employee` VARCHAR(45) NOT NULL,
+  `comment` VARCHAR(500) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_order_1_idx` (`id_equipment` ASC),
+  INDEX `fk_order_2_idx` (`id_client` ASC),
+  INDEX `fk_order_3_idx` (`employee` ASC),
+  CONSTRAINT `fk_order_1`
+    FOREIGN KEY (`id_equipment`)
+    REFERENCES `ioapp`.`equipment` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_order_2`
+    FOREIGN KEY (`id_client`)
+    REFERENCES `ioapp`.`client` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_order_3`
+    FOREIGN KEY (`employee`)
+    REFERENCES `ioapp`.`admin` (`login`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -97,7 +105,9 @@ CREATE TABLE IF NOT EXISTS `ioapp`.`archive` (
   `client_identification_number` VARCHAR(11) NOT NULL,
   `equipment_name` VARCHAR(45) NOT NULL,
   `equipment_model` VARCHAR(45) NOT NULL,
-  `date` DATE NOT NULL,
+  `date_from` DATE NOT NULL,
+  `date_until` DATE NOT NULL,
+  `archived_date` DATE NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -114,11 +124,12 @@ BEGIN
 		(SELECT name FROM ioapp.client WHERE ioapp.client.id=old.id_client),
 		(SELECT identification_number FROM ioapp.client WHERE ioapp.client.id=old.id_client),
 		(SELECT name FROM ioapp.equipment WHERE ioapp.equipment.id=old.id_equipment),
-		(SELECT model FROM ioapp.equipment WHERE ioapp.equipment.id=old.id_equipment), old.date);
+		(SELECT model FROM ioapp.equipment WHERE ioapp.equipment.id=old.id_equipment),
+        old.date_from, old.date_until, CURDATE());
 END$$
 
-DELIMITER ;
 
+DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

@@ -8,16 +8,25 @@ public class Archive {
 	private String client_identification_number;
 	private String equipment_name;
 	private String equipment_model;
-	private Date date;
+	private Date date_from;
+	private Date date_until;
+	private Date archived_date;
+
+	public Archive() {
+		super();
+	}
 
 	public Archive(Integer id, String client_name, String client_identification_number, String equipment_name,
-			String equipment_model, Date date) {
+			String equipment_model, Date date_from, Date date_until, Date archived_date) {
+		super();
 		this.id = id;
 		this.client_name = client_name;
 		this.client_identification_number = client_identification_number;
 		this.equipment_name = equipment_name;
 		this.equipment_model = equipment_model;
-		this.date = date;
+		this.date_from = date_from;
+		this.date_until = date_until;
+		this.archived_date = archived_date;
 	}
 
 	public Integer getId() {
@@ -60,12 +69,28 @@ public class Archive {
 		this.equipment_model = equipment_model;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getDate_from() {
+		return date_from;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate_from(Date date_from) {
+		this.date_from = date_from;
+	}
+
+	public Date getDate_until() {
+		return date_until;
+	}
+
+	public void setDate_until(Date date_until) {
+		this.date_until = date_until;
+	}
+
+	public Date getArchived_date() {
+		return archived_date;
+	}
+
+	public void setArchived_date(Date archived_date) {
+		this.archived_date = archived_date;
 	}
 
 }

@@ -7,32 +7,44 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Validator {
-	public String validateOrder(String id_equipment, String id_client, String date) {
+	public String validateOrder(String id_equipment, String id_client, String date_from, String daysOfRental,
+			String comment) {
 		// CHECKING IF INPUTS AREN'T EMPTY
 		if (id_equipment.equals(""))
 			return "Equipment id can't be empty.";
 		if (id_client.equals(""))
 			return "Client id can't be empty.";
-		if (date.equals(""))
-			return "Date can't be empty.";
+		if (date_from.equals(""))
+			return "Rental start date can't be empty.";
+		if (daysOfRental.equals(""))
+			return "Days of rental can't be empty.";
 
 		// INTEGER VALIDATIONS
 		try {
-			Integer.parseInt(id_equipment);
+			if (Integer.parseInt(id_equipment) < 0)
+				throw new Exception("id can't be negative.");
 		} catch (Exception e) {
-			return "Equipment id has to be integer!";
+			return "Equipment id has to be positive integer!";
 		}
 		try {
-			Integer.parseInt(id_client);
+			if (Integer.parseInt(id_client) < 0)
+				throw new Exception("id can't be negative.");
 		} catch (Exception e) {
-			return "Client id has to be integer!";
+			return "Client id has to be positive integer!";
+		}
+		try {
+			Integer days = Integer.parseInt(daysOfRental);
+			if (days <= 0 || days > 14)
+				throw new Exception("Days of rental can't be negative.");
+		} catch (Exception e) {
+			return "Days of rental has to be integer between 1 and 14";
 		}
 
 		// DATE VALIDATION
 		try {
 			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 					.withResolverStyle(ResolverStyle.STRICT);
-			System.out.println(dateFormatter.parse(date).toString());
+			System.out.println(dateFormatter.parse(date_from).toString());
 		} catch (Exception e) {
 			return "Date format has to be yyyy-MM-dd!";
 		}

@@ -1,6 +1,8 @@
 package application;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,6 +39,9 @@ public class FXController {
 	// POPUP WINDOW THAT SHOWS ERROR MESSAGE
 	private PopupWindow popupWindow;
 
+	// STORES EMPLOYEE'S LOGIN
+	private Singleton singleton = Singleton.getInstance();
+
 	private ObservableList<Order> ordersTableContent;
 
 	private ObservableList<Client> clientsTableContent;
@@ -60,9 +65,10 @@ public class FXController {
 	void logInButtonOnAction(ActionEvent event) {
 		String login = loginInput.getText();
 		String password = passwordInput.getText();
-		if (database.logIn(login, password))
+		if (database.logIn(login, password)) {
+			singleton.setEmployee(login);
 			changeScene((Parent) logInViewBorderPane, "MainView");
-		else
+		} else
 			popupWindow.display("Error", "Wrong login and/or password.");
 	}
 
@@ -72,7 +78,7 @@ public class FXController {
 
 	// ORDER TEXT FIELDS
 	@FXML
-	private TextField orderIdEqupimentInput, orderIdClientInput, orderDateInput;
+	private TextField orderIdEqupimentInput, orderIdClientInput, orderDateFromInput, orderDaysInput, orderCommentInput;
 
 	// CLIENT TEXT FIELDS
 	@FXML
@@ -106,7 +112,9 @@ public class FXController {
 	@FXML
 	private TableColumn<Order, Integer> orderIdColumn, orderIdEquipmentColumn, orderIdClientColumn;
 	@FXML
-	private TableColumn<Order, Date> orderDateColumn;
+	private TableColumn<Order, Date> orderDateFromColumn, orderDateUntilColumn;
+	@FXML
+	private TableColumn<Order, String> orderEmployeeColumn, orderCommentColumn;
 
 	// CLIENT COLUMNS
 	@FXML
@@ -130,32 +138,32 @@ public class FXController {
 	private TableColumn<Archive, String> archiveClientNameColumn, archiveClientIdNumberColumn,
 			archiveEquipmentNameColumn, archiveEquipmentModelColumn;
 	@FXML
-	private TableColumn<Archive, Date> archiveDateColumn;
+	private TableColumn<Archive, Date> archiveDateFromColumn, archiveDateUntilColumn, archiveDateColumn;
 
 	@FXML
 	void addOrderOnAction(ActionEvent event) {
 		String id_equipment = orderIdEqupimentInput.getText();
 		String id_client = orderIdClientInput.getText();
-		String date = orderDateInput.getText();
-		String validationResult = validator.validateOrder(id_equipment, id_client, date);
+		String date_from = orderDateFromInput.getText();
+		String daysOfRental = orderDaysInput.getText();
+		String comment = orderCommentInput.getText();
+		String validationResult = validator.validateOrder(id_equipment, id_client, date_from, daysOfRental, comment);
 		if (!validationResult.equals("ok")) {
 			popupWindow.display("Warning", validationResult);
 			return;
 		}
+		String date_until = calculateFinishDate(date_from, daysOfRental);
 
-		String exceptionMessage = database.addOrder(id_equipment, id_client, date);
+		String exceptionMessage = database.addOrder(id_equipment, id_client, date_from, date_until,
+				singleton.getEmployee(), comment);
 		if (exceptionMessage != null) {
-			String equipmentAlreadyRentedRegex = "^.*id_equipment_UNIQUE.*$";
-			Pattern pattern = Pattern.compile(equipmentAlreadyRentedRegex);
-			Matcher matcher = pattern.matcher(exceptionMessage);
-			if (matcher.matches())
-				popupWindow.display("Warning", "This equipment is currently rented.");
-			else
-				popupWindow.display("Error", "Following error occured: " + exceptionMessage);
+			popupWindow.display("Error", "Following error occured: " + exceptionMessage);
 		} else {
 			orderIdEqupimentInput.clear();
 			orderIdClientInput.clear();
-			orderDateInput.clear();
+			orderDateFromInput.clear();
+			orderDaysInput.clear();
+			orderCommentInput.clear();
 			refreshOrdersTable();
 		}
 	}
@@ -189,7 +197,7 @@ public class FXController {
 
 		String exceptionMessage = database.addClient(name, idNumber, address, postcode, phoneNumber, email);
 		if (exceptionMessage != null) {
-			// CHECKING EXCEPTION MESSAGE
+			// CHECKING IF IDENTIFICATION NUMBER IS ALREADY IN DB
 			String identificationAlreadyInDatabaseRegex = "^.*identification_number_UNIQUE.*$";
 			Pattern pattern = Pattern.compile(identificationAlreadyInDatabaseRegex);
 			Matcher matcher = pattern.matcher(exceptionMessage);
@@ -311,7 +319,10 @@ public class FXController {
 		orderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id"));
 		orderIdEquipmentColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_equipment"));
 		orderIdClientColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("id_client"));
-		orderDateColumn.setCellValueFactory(new PropertyValueFactory<Order, Date>("date"));
+		orderDateFromColumn.setCellValueFactory(new PropertyValueFactory<Order, Date>("date_from"));
+		orderDateUntilColumn.setCellValueFactory(new PropertyValueFactory<Order, Date>("date_until"));
+		orderEmployeeColumn.setCellValueFactory(new PropertyValueFactory<Order, String>("employee"));
+		orderCommentColumn.setCellValueFactory(new PropertyValueFactory<Order, String>("comment"));
 
 		ordersTableContent = FXCollections.observableArrayList();
 		ordersTable.setItems(ordersTableContent);
@@ -370,7 +381,9 @@ public class FXController {
 				.setCellValueFactory(new PropertyValueFactory<Archive, String>("client_identification_number"));
 		archiveEquipmentNameColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_name"));
 		archiveEquipmentModelColumn.setCellValueFactory(new PropertyValueFactory<Archive, String>("equipment_model"));
-		archiveDateColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("date"));
+		archiveDateFromColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("date_from"));
+		archiveDateUntilColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("date_until"));
+		archiveDateColumn.setCellValueFactory(new PropertyValueFactory<Archive, Date>("archived_date"));
 
 		archiveTableContent = FXCollections.observableArrayList();
 		archiveTable.setItems(archiveTableContent);
@@ -381,7 +394,22 @@ public class FXController {
 		}
 	}
 
-	void changeScene(Parent pane, String fxml) {
+	private String calculateFinishDate(String date_from, String daysOfRental) {
+		// CHANGING STR TO INT
+		Integer days;
+		days = Integer.parseInt(daysOfRental);
+
+		// CHANGING STR TO LOCALDATE AND ADDING DAYS
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate dateUntil = LocalDate.parse(date_from, formatter).plusDays(days);
+
+		// BACK TO STR
+		String date_until = dateUntil.toString();
+		System.out.println(date_until);
+		return date_until;
+	}
+
+	private void changeScene(Parent pane, String fxml) {
 		Parent newPane;
 		try {
 			newPane = FXMLLoader.load(getClass().getResource(fxml + ".fxml"));

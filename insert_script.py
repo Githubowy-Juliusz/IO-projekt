@@ -1,4 +1,9 @@
-import random, string
+import random, string, datetime
+
+
+#admin
+print("INSERT INTO ioapp.admin VALUES(\'root\', \'localhost\');")
+print("")
 
 #client
 name_list = ["Adam", "Stefan", "Andrzej", "Juliusz", "Mariusz", "Janusz", "Mikołaj", "Agata", "Aneta", "Aleksandara", "Ania", "Alicja", "Beata", "Martyna", "Małgorzata"]
@@ -48,6 +53,8 @@ for i in range(1, 201):
 
 	print(f"INSERT INTO ioapp.client VALUES({i}, \'{full_name}\', \'{pesel}\', \'{address}\', \'{postcode}\', \'{phone_number}\', \'{email}\');")
 
+print("")
+
 #equipment
 types_and_names = [("Instrument dęty", "Puzon"), ("Instrument dęty", "Klarnet"), ("Instrument dęty", "Flet"), ("Instrument strunowy", "Gitara"), ("Instrument strunowy", "Gitara elektryczna"), ("Instrument strunowy", "Gitara basowa"), ("Instrument strunowy", "Gitara"), ("Instrument strunowy", "Skrzypce")]
 
@@ -62,16 +69,20 @@ for i in range (1, 501):
 	cost = str(round(cost, 2))
 
 	print(f"INSERT INTO ioapp.equipment VALUES({i}, \'{type_}\', \'{name}\', \'{model}\', {year}, {cost});")
-
+print("")
 
 #orders
 taken_equipment = []
+equipment = 0
+date_from = "2020-05-24"
+date_until = "2020-05-30"
+employee = "root"
 for i in range(1, 201):
 	client = str(random.randint(1, 200))
-	equipment = 0
+	comment = "comment " + str(i * random.randint(1, 5))
 	while True:
 		equipment = random.randint(1, 500)
 		if equipment not in taken_equipment:
 			taken_equipment.append(equipment)
 			break
-	print(f"INSERT INTO ioapp.orders VALUES({i}, {equipment}, {client}, \'2020-04-13\');")
+	print(f"INSERT INTO ioapp.orders VALUES({i}, {equipment}, {client}, \'{date_from}\', \'{date_until}\', \'{employee}\', \'{comment}\');")

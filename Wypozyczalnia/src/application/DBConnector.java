@@ -44,8 +44,11 @@ public class DBConnector {
 				Integer id = result.getInt(1);
 				Integer id_equipment = result.getInt(2);
 				Integer id_client = result.getInt(3);
-				Date date = result.getDate(4);
-				Order order = new Order(id, id_client, id_equipment, date);
+				Date date_from = result.getDate(4);
+				Date date_until = result.getDate(5);
+				String employee = result.getString(6);
+				String comment = result.getString(7);
+				Order order = new Order(id, id_equipment, id_client, date_from, date_until, employee, comment);
 				orders.add(order);
 			}
 		} catch (Exception e) {
@@ -108,9 +111,11 @@ public class DBConnector {
 				String client_identification_number = result.getString(3);
 				String equipment_name = result.getString(4);
 				String equipment_model = result.getString(5);
-				Date date = result.getDate(6);
+				Date date_from = result.getDate(6);
+				Date date_until = result.getDate(7);
+				Date archived_date = result.getDate(8);
 				Archive archive = new Archive(id, client_name, client_identification_number, equipment_name,
-						equipment_model, date);
+						equipment_model, date_from, date_until, archived_date);
 				archiveList.add(archive);
 			}
 		} catch (Exception e) {
@@ -119,9 +124,11 @@ public class DBConnector {
 		return archiveList;
 	}
 
-	public String addOrder(String id_equipment, String id_client, String date) {
+	public String addOrder(String id_equipment, String id_client, String date_from, String date_until, String employee,
+			String comment) {
 		try (Connection connection = DriverManager.getConnection(database, databaseUser, userPassword);) {
-			String query = "INSERT INTO orders VALUES(0, " + id_equipment + ", " + id_client + ", \'" + date + "\')";
+			String query = String.format("INSERT INTO orders VALUES(0, %s, %s, \'%s\', \'%s\', \'%s\', \'%s\')",
+					id_equipment, id_client, date_from, date_until, employee, comment);
 			Statement statement = connection.createStatement();
 			statement.executeUpdate(query);
 		} catch (Exception e) {

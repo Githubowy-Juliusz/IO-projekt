@@ -7,7 +7,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="mainViewBorderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXController">
+<BorderPane fx:id="mainViewBorderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXController">
    <center>
       <TabPane fx:id="tabPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
@@ -19,7 +19,13 @@
                            <children>
                               <TextField fx:id="orderIdEqupimentInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="ID of equipment" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="orderIdClientInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="ID of client" HBox.hgrow="ALWAYS" />
-                              <TextField fx:id="orderDateInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Date" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="orderDateFromInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Rental start date" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="orderDaysInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Days of rental" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
+                           <children>
+                              <TextField fx:id="orderCommentInput" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Comment" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="600.0">
@@ -31,10 +37,13 @@
                         </HBox>
                         <TableView fx:id="ordersTable" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn fx:id="orderIdColumn" maxWidth="1.7976931348623157E308" minWidth="20.0" prefWidth="112.0" text="ID" />
-                              <TableColumn fx:id="orderIdEquipmentColumn" maxWidth="1.7976931348623157E308" minWidth="20.0" prefWidth="166.0" text="ID of equipment" />
-                              <TableColumn fx:id="orderIdClientColumn" prefWidth="159.0" text="ID of client" />
-                              <TableColumn fx:id="orderDateColumn" prefWidth="162.0" text="Date" />
+                              <TableColumn fx:id="orderIdColumn" maxWidth="1.7976931348623157E308" minWidth="20.0" prefWidth="44.0" text="ID" />
+                              <TableColumn fx:id="orderIdEquipmentColumn" maxWidth="1.7976931348623157E308" minWidth="20.0" prefWidth="98.0" text="ID of equipment" />
+                              <TableColumn fx:id="orderIdClientColumn" prefWidth="84.0" text="ID of client" />
+                              <TableColumn fx:id="orderDateFromColumn" prefWidth="119.0" text="Rented from" />
+                              <TableColumn fx:id="orderDateUntilColumn" prefWidth="114.0" text="Rented from" />
+                              <TableColumn fx:id="orderEmployeeColumn" prefWidth="75.0" text="Employee" />
+                              <TableColumn fx:id="orderCommentColumn" prefWidth="153.0" text="Comment" />
                            </columns>
                         </TableView>
                      </children>
@@ -125,12 +134,14 @@
                      <children>
                         <TableView fx:id="archiveTable" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
                            <columns>
-                              <TableColumn fx:id="archiveIdColumn" prefWidth="75.0" text="ID" />
-                              <TableColumn fx:id="archiveClientNameColumn" prefWidth="126.0" text="Client's name" />
-                              <TableColumn fx:id="archiveClientIdNumberColumn" prefWidth="234.0" text="Client's identification number" />
-                              <TableColumn fx:id="archiveEquipmentNameColumn" prefWidth="156.0" text="Equipment's name" />
-                              <TableColumn fx:id="archiveEquipmentModelColumn" prefWidth="156.0" text="Equipment's model" />
-                              <TableColumn fx:id="archiveDateColumn" prefWidth="210.0" text="Date" />
+                              <TableColumn fx:id="archiveIdColumn" prefWidth="32.0" text="ID" />
+                              <TableColumn fx:id="archiveClientNameColumn" prefWidth="71.0" text="Client's name" />
+                              <TableColumn fx:id="archiveClientIdNumberColumn" prefWidth="133.0" text="Client's identification number" />
+                              <TableColumn fx:id="archiveEquipmentNameColumn" prefWidth="127.0" text="Equipment's name" />
+                              <TableColumn fx:id="archiveEquipmentModelColumn" prefWidth="136.0" text="Equipment's model" />
+                              <TableColumn fx:id="archiveDateFromColumn" prefWidth="107.0" text="Rented from" />
+                              <TableColumn fx:id="archiveDateUntilColumn" prefWidth="87.0" text="Rented until" />
+                              <TableColumn fx:id="archiveDateColumn" prefWidth="225.0" text="Date archived" />
                            </columns>
                         </TableView>
                      </children>
